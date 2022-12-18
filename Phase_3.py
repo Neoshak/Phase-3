@@ -1,7 +1,8 @@
+#Neosha Anderson
 #CIS261
-#Ph#Neosha Anderson
+#Phase 3
+from datetime import datetime  ###################################
 
-from datetime import datetime 
 def GetEmpName():
     empname = input("Enter employee name: ")
     return empname
@@ -24,15 +25,14 @@ def CalcTaxAndNetPay(hours, hourlyrate, taxrate):
     netpay = grosspay - incometax
     return grosspay, incometax, netpay
 
-def printinfo(DetailsPrinted):
+def printinfo():
     TotEmployees = 0
     TotHours = 0.00
     TotGrossPay = 0.00
     TotTax = 0.00
     TotNetPay = 0.00
 ###################################################################
-    # write the line of code to open Employees.txt file in read mode and assign to EmpFile
-
+    EmpFile = open("Employees.txt", "r")
     while True:
         rundate = input ("Enter start date for report (MM/DD/YYYY) or All for all data in file: ")
         if (rundate.upper() == "ALL"):
@@ -45,18 +45,15 @@ def printinfo(DetailsPrinted):
             print()
             continue  # skip next if statement and re-start loop
     while True:
-        # write the line of code to read a record from EmpFile and assign it to EmpDetail
-
+        EmpDetail = EmpFile.readline()
         if not EmpDetail:
             break
-        #write the line of code to remove the carriage return from the end of the record read from the file
-
-        #write the line of code to split the record read in on the pipe delimiter and assign it to EmpList
-
+        EmpDetail = EmpDetail.replace("\n", "") #remove carriage return from end of line
+        EmpList = EmpDetail.split("|")
         fromdate = EmpList[0]
         if (str(rundate).upper() != "ALL"):
             checkdate = datetime.strptime(fromdate, "%m/%d/%Y")
-            if (checkdate < rundate):
+            if (checkdate < rundate):  
                 continue        
 ######################################################################
         todate = EmpList[1]
@@ -77,7 +74,7 @@ def printinfo(DetailsPrinted):
         EmpTotals["TotTax"] = TotTax
         EmpTotals["TotNetPay"] = TotNetPay
         DetailsPrinted = True   
-    if (DetailsPrinted):  #skip of no detail lines printed
+    if (DetailsPrinted):
         PrintTotals (EmpTotals)
     else:
         print("No detail information to print")
@@ -93,8 +90,7 @@ def PrintTotals(EmpTotals):
    
 
 if __name__ == "__main__":
-    # write the line of code to open a file Employees.txt in append mode and assign it to EmpFile
-
+    EmpFile = open("Employees.txt", "a+")
     #EmpDetailList = []
     EmpTotals = {}
     DetailsPrinted = False
@@ -107,16 +103,15 @@ if __name__ == "__main__":
         hourlyrate = GetHourlyRate()
         taxrate = GetTaxRate()
         ##############################################################
-        # write the line of code that will concatenate fromdate, todate, empname, hours, hourlyrate, and taxrate. Pipe delimit each value and add a carriage return to the end of the line
-        # and assign the line to EmpDetail
- 
-        # write the liie of code that will write EmpDetail to EmpFile
-    
-    # write the line of code to close EmpFile
-
-    printinfo(DetailsPrinted)
-
-
-
+        EmpDetail = fromdate + "|" + todate + "|" + empname + "|" + str(hours) + "|" + str(hourlyrate) + "|" + str(taxrate) + "\n"
+        EmpFile.write(EmpDetail)
+     # close file to save data
+    EmpFile.close()
+    DetailsPrinted = False
+    printinfo()
+    if (DetailsPrinted): #skip of no detail lines printed
+         PrintTotals (EmpTotals)
+    else:
+         print("No detail information to print")
 ####################################################################
 
